@@ -3,28 +3,25 @@ class Class {
 
 }
 
-
 interface IAgenda {
     bookClass(name: string, day: string, hour: number): void;
     deleteClass(day: string, hour: number): void;
     moveClass(dayOrigin: string, hourOrigin: number, dayDestination: string, hourDestination: number): void;
-    searchClass(name: string): void;
+    findClassByName(name: string): (Class[] | null);
+    findClassByDay(day: string, hour: number): void;
     printSchedule(): void;
 }
 
-
 const daysOfTheWeek = 6
 const hoursOfTheDay = 10
-
 class Agenda implements IAgenda {
 
-    // MATRIX = SCHEDULE
-    matrix: (Class | null | string)[][];
 
+    matrix: (Class | null | string)[][];
 
     constructor(days: number = daysOfTheWeek, hours: number = hoursOfTheDay) {
 
-        this.matrix = Array.from({ length: days + 1 }, () => Array(hours + 1).fill(null));
+        this.matrix = Array.from({ length: days + 1 }, () => Array( hours + 1).fill(null));
 
 
 
@@ -43,22 +40,21 @@ class Agenda implements IAgenda {
         for (let j = 1; j <= hours; j++) {
             this.matrix[0][j] = `${daysOfTheWeek + j}:00`
         }
-        //  console.log(this.matrix);
+ 
     }
-
 
     bookClass(name: string, day: string, hour: number): boolean {
         const upperDay = day.toUpperCase()
-
-
         const dayIndex = this.matrix.findIndex(row => typeof row[0] === 'string' && row[0].startsWith(upperDay))
         const hourIndex = this.matrix[0].findIndex(col => col === `${hour}:00`)
 
 
         if (dayIndex !== -1 && hourIndex !== -1) {
+            const upperName = name.toUpperCase();
+
             if (this.matrix[dayIndex][hourIndex] === null) {
-                this.matrix[dayIndex][hourIndex] = new Class(name, upperDay, hour)
-                console.log(`Class "${name}" booked on ${upperDay} at ${hour}:00.`)
+                this.matrix[dayIndex][hourIndex] = new Class(upperName, upperDay, hour)
+                console.log(`Class "${upperName}" booked on ${upperDay} at ${hour}:00.`)
                 return true;
             } else {
                 console.log(`Error: You already booked a class on ${upperDay} at ${hour}:00.`)
@@ -70,41 +66,151 @@ class Agenda implements IAgenda {
         return false
     }
 
+    deleteClass(day: string, hour: number): void {
+        const upperDay = day.toUpperCase();
+        const dayIndex = this.matrix.findIndex(row => typeof row[0] === 'string' && row[0].startsWith(upperDay));
+        const hourIndex = this.matrix[0].findIndex(col => col === `${hour}:00`);
 
-deleteClass(day: string, hour: number): void {
-    const upperDay = day.toUpperCase();
-
-    const dayIndex = this.matrix.findIndex(row => typeof row[0] === 'string' && row[0].startsWith(upperDay));
-    const hourIndex = this.matrix[0].findIndex(col => col === `${hour}:00`);
-
-    if (dayIndex !== -1 && hourIndex !== -1) {
-        const scheduledClass = this.matrix[dayIndex][hourIndex];
-        if (scheduledClass instanceof Class) { 
-            const className = scheduledClass.name;
-            this.matrix[dayIndex][hourIndex] = null; 
-            console.log(`Class "${className}" deleted from ${upperDay} at ${hour}:00.`);
+        if (dayIndex !== -1 && hourIndex !== -1) {
+            const scheduledClass = this.matrix[dayIndex][hourIndex];
+            if (scheduledClass instanceof Class) {
+                const className = scheduledClass.name.toLocaleUpperCase();
+                this.matrix[dayIndex][hourIndex] = null;
+                console.log(`Class "${className}" deleted from ${upperDay} at ${hour}:00.`);
+            } else {
+                console.log(`Error: No class scheduled on ${upperDay} at ${hour}:00.`);
+            }
         } else {
-            console.log(`Error: No class scheduled on ${upperDay} at ${hour}:00.`);
+            console.log(`Error: Invalid day or hour.`);
         }
-    } else {
-        console.log(`Error: Invalid day or hour.`);
     }
+
+    moveClass(dayOrigin: string, hourOrigin: number, dayDestination: string, hourDestination: number): void {
+
+        const upperDayOrigin = dayOrigin.toUpperCase();
+        const upperDayDestination = dayDestination.toUpperCase();
+        const dayIndexOrigin = this.matrix.findIndex(row => typeof row[0] === 'string' && row[0].startsWith(upperDayOrigin));
+        const hourIndexOrigin = this.matrix[0].findIndex(col => col === `${hourOrigin}:00`);
+        const dayIndexDestination = this.matrix.findIndex(row => typeof row[0] === 'string' && row[0].startsWith(upperDayDestination));
+        const hourIndexDestination = this.matrix[0].findIndex(col => col === `${hourDestination}:00`);
+
+        if (dayIndexOrigin !== -1 && hourIndexOrigin !== -1 && dayIndexDestination !== -1 && hourIndexDestination !== -1) {
+            const scheduledClass = this.matrix[dayIndexOrigin][hourIndexOrigin];
+            if (scheduledClass instanceof Class) {
+                const className = scheduledClass.name.toLocaleUpperCase();
+                if (this.matrix[dayIndexDestination][hourIndexDestination] === null) {
+                    this.matrix[dayIndexDestination][hourIndexDestination] = new Class(className, upperDayDestination, hourDestination);
+                    this.matrix[dayIndexOrigin][hourIndexOrigin] = null;
+                    console.log(`Class "${className}" moved from ${upperDayOrigin} at ${hourOrigin}:00 to ${upperDayDestination} at ${hourDestination}:00.`);
+
+                } else {
+                    console.log(`ERROR: Cannot move class to ${upperDayDestination} at ${hourDestination}:00. Time slot is already booked.`);
+                }
+            } else {
+                console.log(`Error: No class scheduled on ${upperDayOrigin} at ${hourOrigin}:00.`);
+            }
+        } else {
+            console.log(`Error: Invalid day or hour. Please remember that classes can be scheduled from Monday to Saturday, between 7:00 and 16:00.`);
+
+        }
+    }
+
+    findClassByName(name: string): Class[] | null {
+
+        const upperName = name.toUpperCase();
+        const classesFound: Class[] = this.matrix
+            .flatMap(row => row)
+            .filter(cls => cls instanceof Class && cls.name === upperName) as Class[];
+
+        if (classesFound.length > 0) {
+            const classByName = classesFound.map(cls => ({
+                name: cls.name,
+                day: cls.day,
+                hour: cls.hour
+            }));
+
+            console.log(`Classes found for "${upperName}": `);
+            classByName.forEach(cls => {
+                console.log(`- ${cls.name} on ${cls.day} at ${cls.hour}:00`);
+            });
+
+            return classesFound;
+        } else {
+            console.log(`No classes found for "${upperName}".`);
+            return null;
+        }
+    }
+
+    findClassByDay(day: string, hour: number) {
+
+        const upperDay = day.toUpperCase();
+        const dayIndex = this.matrix.findIndex(row => typeof row[0] === 'string' && row[0].startsWith(upperDay));
+        const hourIndex = this.matrix[0].findIndex(col => col === `${hour}:00`);
+
+        if (dayIndex !== -1 && hourIndex !== -1) {
+            const scheduledClass = this.matrix[dayIndex][hourIndex];
+            if (scheduledClass instanceof Class) {
+                console.log(`Class found: ${scheduledClass.name} on ${upperDay} at ${hour}:00`);
+            } else {
+                console.log(`No class scheduled on ${upperDay} at ${hour}:00.`);
+            }
+        } else {
+            console.log(`Error: Invalid day or hour.`);
+        }
+    }
+
+    printSchedule(): void {
+        console.log("Weekly Schedule");
+        console.log("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+        const columnWidth = 16;
+        const dayColumnWidth = 20;
+
+        let header = "                     | ";
+        for (let j = 1; j < this.matrix[0].length; j++) {
+            header += `${this.matrix[0][j]?.toString().padEnd(columnWidth)} | `;
+        }
+        console.log(header);
+        console.log("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+        for (let i = 1; i < this.matrix.length; i++) {
+            let row = `${this.matrix[i][0]?.toString().padEnd(dayColumnWidth)} | `;
+            for (let j = 1; j < this.matrix[i].length; j++) {
+                const scheduledClass = this.matrix[i][j];
+                if (scheduledClass instanceof Class) {
+                    row += `${scheduledClass.name.padEnd(columnWidth)} | `;
+                } else {
+                    row += " ".repeat(columnWidth) + "| ";
+                }
+            }
+            console.log(row);
+            console.log("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        }
+    }
+
+
 }
-
-
-
-
-
-    moveClass(dayOrigin: string, hourOrigin: number, dayDestination: string, hourDestination: number): void { }
-    searchClass(name: string): void { }
-    printSchedule(): void { }
-
-}
-
-``
 const agenda1 = new Agenda(6, 10);
 
 agenda1.bookClass('Soccer', 'monDay', 16)
 agenda1.bookClass('Code Class', 'monDay', 7)
 agenda1.bookClass('Math', 'tuesday', 7)
+agenda1.bookClass('soccer', 'friday', 8)
+agenda1.bookClass('History', 'tuesday', 8)
+agenda1.bookClass('Science', 'wednesday', 9)
+agenda1.bookClass('Art', 'saturday', 16)
 agenda1.deleteClass('tuesday', 7)
+
+agenda1.moveClass('monDay', 16, 'tuesday', 7)
+agenda1.moveClass('tuesday', 7, 'wednesday', 9)
+
+agenda1.findClassByName('soccer')
+agenda1.findClassByName('Dance')
+
+agenda1.findClassByDay('tuesday', 7)
+agenda1.findClassByDay('wednesday', 13)
+
+
+
+agenda1.printSchedule()
+
