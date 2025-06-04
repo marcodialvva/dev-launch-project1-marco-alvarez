@@ -25,7 +25,7 @@ export class Schedule {
             this.matrix[i][0] = `${weekDays[i - 1]} ${currentDay.getDate()} ${currentDay.toLocaleString('default', { month: 'long' })}`;
         }
         for (let j = 1; j <= this.hoursOfTheDay; j++) {
-            this.matrix[0][j] = `${j + 6}:00`; 
+            this.matrix[0][j] = `${j + 6}:00`;
         }
     }
 }
