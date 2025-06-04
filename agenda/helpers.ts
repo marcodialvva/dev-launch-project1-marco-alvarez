@@ -5,7 +5,6 @@ export class DayHourIndexFinder {
     constructor(matrix: any[][]) {
         this.matrix = matrix;
     }
-
     public getDayAndHourIndices(day: string, hour: number): { dayIndex: number, hourIndex: number } {
         const upperDay = day.toUpperCase();
         const dayIndex = this.matrix.findIndex(row => typeof row[0] === 'string' && row[0].startsWith(upperDay));
