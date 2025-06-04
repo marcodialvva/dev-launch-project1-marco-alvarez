@@ -75,7 +75,7 @@ export class Scheduler {
         if (classesFound.length > 0) {
             console.log(`Classes found for "${upperName}": `);
             classesFound.forEach(cls => {
-                console.log(`- ${cls.name} on ${cls.day} at ${cls.hour}:00`);
+                console.log(cls.toString());
             });
             return classesFound;
         } else {
@@ -89,7 +89,7 @@ export class Scheduler {
         if (dayIndex !== -1 && hourIndex !== -1) {
             const scheduledClass = this.schedule.matrix[dayIndex][hourIndex];
             if (scheduledClass instanceof Class) {
-                console.log(`Class found: ${scheduledClass.name} on ${day.toUpperCase()} at ${hour}:00`);
+                console.log(`Class found: ${scheduledClass.toString()}`);
             } else {
                 console.log(`No class scheduled on ${day.toUpperCase()} at ${hour}:00.`);
             }
