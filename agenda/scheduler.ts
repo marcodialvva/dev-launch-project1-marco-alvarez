@@ -1,3 +1,4 @@
+
 import { Class } from './class';
 import { Schedule } from './schedule';
 import { DayHourIndexFinder } from './helpers';
@@ -11,40 +12,38 @@ export class Scheduler {
         this.dayHourIndexFinder = new DayHourIndexFinder(this.schedule.matrix);
     }
 
-    bookClass(name: string, day: string, hour: number): boolean {
+    bookClass(name: string, day: string, hour: number): string {
         const { dayIndex, hourIndex } = this.dayHourIndexFinder.getDayAndHourIndices(day, hour);
         if (dayIndex !== -1 && hourIndex !== -1) {
             const upperName = name.toUpperCase();
             if (this.schedule.matrix[dayIndex][hourIndex] === null) {
                 this.schedule.matrix[dayIndex][hourIndex] = new Class(upperName, day.toUpperCase(), hour);
-                console.log(`Class "${upperName}" booked on ${day.toUpperCase()} at ${hour}:00.`);
-                return true;
+                return `Class "${upperName}" booked on ${day.toUpperCase()} at ${hour}:00.`;
             } else {
-                console.log(`Error: You already booked a class on ${day.toUpperCase()} at ${hour}:00.`);
+                return `Error: You already booked a class on ${day.toUpperCase()} at ${hour}:00.`;
             }
         } else {
-            console.log(`Error: Invalid day or hour.`);
+            return `Error: Invalid day or hour.`;
         }
-        return false;
     }
 
-    deleteClass(day: string, hour: number): void {
+    deleteClass(day: string, hour: number): string {
         const { dayIndex, hourIndex } = this.dayHourIndexFinder.getDayAndHourIndices(day, hour);
         if (dayIndex !== -1 && hourIndex !== -1) {
             const scheduledClass = this.schedule.matrix[dayIndex][hourIndex];
             if (scheduledClass instanceof Class) {
                 const className = scheduledClass.name.toLocaleUpperCase();
                 this.schedule.matrix[dayIndex][hourIndex] = null;
-                console.log(`Class "${className}" deleted from ${day.toUpperCase()} at ${hour}:00.`);
+                return `Class "${className}" deleted from ${day.toUpperCase()} at ${hour}:00.`;
             } else {
-                console.log(`Error: No class scheduled on ${day.toUpperCase()} at ${hour}:00.`);
+                return `Error: No class scheduled on ${day.toUpperCase()} at ${hour}:00.`;
             }
         } else {
-            console.log(`Error: Invalid day or hour.`);
+            return `Error: Invalid day or hour.`;
         }
     }
 
-    moveClass(dayOrigin: string, hourOrigin: number, dayDestination: string, hourDestination: number): void {
+    moveClass(dayOrigin: string, hourOrigin: number, dayDestination: string, hourDestination: number): string {
         const { dayIndex: dayIndexOrigin, hourIndex: hourIndexOrigin } = this.dayHourIndexFinder.getDayAndHourIndices(dayOrigin, hourOrigin);
         const { dayIndex: dayIndexDestination, hourIndex: hourIndexDestination } = this.dayHourIndexFinder.getDayAndHourIndices(dayDestination, hourDestination);
         if (dayIndexOrigin !== -1 && hourIndexOrigin !== -1 && dayIndexDestination !== -1 && hourIndexDestination !== -1) {
@@ -54,15 +53,15 @@ export class Scheduler {
                 if (this.schedule.matrix[dayIndexDestination][hourIndexDestination] === null) {
                     this.schedule.matrix[dayIndexDestination][hourIndexDestination] = new Class(className, dayDestination.toUpperCase(), hourDestination);
                     this.schedule.matrix[dayIndexOrigin][hourIndexOrigin] = null;
-                    console.log(`Class "${className}" moved from ${dayOrigin.toUpperCase()} at ${hourOrigin}:00 to ${dayDestination.toUpperCase()} at ${hourDestination}:00.`);
+                    return `Class "${className}" moved from ${dayOrigin.toUpperCase()} at ${hourOrigin}:00 to ${dayDestination.toUpperCase()} at ${hourDestination}:00.`;
                 } else {
-                    console.log(`ERROR: Cannot move class to ${dayDestination.toUpperCase()} at ${hourDestination}:00. Time slot is already booked.`);
+                    return `ERROR: Cannot move class to ${dayDestination.toUpperCase()} at ${hourDestination}:00. Time slot is already booked.`;
                 }
             } else {
-                console.log(`Error: No class scheduled on ${dayOrigin.toUpperCase()} at ${hourOrigin}:00.`);
+                return `Error: No class scheduled on ${dayOrigin.toUpperCase()} at ${hourOrigin}:00.`;
             }
         } else {
-            console.log(`Error: Invalid day or hour.`);
+            return `Error: Invalid day or hour.`;
         }
     }
 
@@ -73,28 +72,23 @@ export class Scheduler {
             .filter(cls => cls instanceof Class && cls.name === upperName) as Class[];
 
         if (classesFound.length > 0) {
-            console.log(`Classes found for "${upperName}": `);
-            classesFound.forEach(cls => {
-                console.log(cls.toString());
-            });
             return classesFound;
         } else {
-            console.log(`No classes found for "${upperName}".`);
             return null;
         }
     }
 
-    findClassByDay(day: string, hour: number): void {
+    findClassByDay(day: string, hour: number): string {
         const { dayIndex, hourIndex } = this.dayHourIndexFinder.getDayAndHourIndices(day, hour);
         if (dayIndex !== -1 && hourIndex !== -1) {
             const scheduledClass = this.schedule.matrix[dayIndex][hourIndex];
             if (scheduledClass instanceof Class) {
-                console.log(`Class found: ${scheduledClass.toString()}`);
+                return `Class found: ${scheduledClass.toString()}`;
             } else {
-                console.log(`No class scheduled on ${day.toUpperCase()} at ${hour}:00.`);
+                return `No class scheduled on ${day.toUpperCase()} at ${hour}:00.`;
             }
         } else {
-            console.log(`Error: Invalid day or hour.`);
+            return `Error: Invalid day or hour.`;
         }
     }
 }
