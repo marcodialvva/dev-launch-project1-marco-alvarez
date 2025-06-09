@@ -1,6 +1,6 @@
 import { Schedule } from './schedule';
 import { Scheduler } from './scheduler';
-import { Class } from './class'; // Asegúrate de que esta importación sea correcta
+import { Class } from './class'; 
 
 
 const schedule = new Schedule(); 
@@ -39,30 +39,5 @@ const scheduler = new Scheduler(schedule);
     console.log(scheduler.findClassByDay('wednesday', 11));
     
 
-
-
-
-
-
-
-
-    // Intentar reservar una clase en un horario ya ocupado
-    //console.log(scheduler.bookClass("Physics", "MONDAY", 9)); // Debería dar error porque ya hay una clase a las 9:00
-
-    // Buscar clases por nombre
-    //console.log(scheduler.findClassByName("Math")); // Debería devolver la clase "Math"
-    //console.log(scheduler.findClassByName("Biology")); // Debería devolver null porque no hay clase "Biology"
-
-    // Buscar clase por día y hora
-    //console.log(scheduler.findClassByDay("MONDAY", 9)); // Debería devolver la clase "Math"
-    //console.log(scheduler.findClassByDay("TUESDAY", 9)); // Debería devolver "No class scheduled on TUESDAY at 9:00."
-
-    // Eliminar una clase
-    //console.log(scheduler.deleteClass("MONDAY", 9)); // Debería eliminar la clase "Math"
-    //console.log(scheduler.deleteClass("MONDAY", 9)); // Debería dar error porque ya no hay clase a las 9:00
-
-    // Mover una clase
-   // console.log(scheduler.moveClass("MONDAY", 7, "TUESDAY", 8)); // Debería mover la clase "Science" a martes a las 8:00
-    //console.log(scheduler.moveClass("MONDAY", 7, "TUESDAY", 9)); // Debería dar error porque no hay clase a las 7:00 para mover
 
     scheduler.printSchedule(); 
