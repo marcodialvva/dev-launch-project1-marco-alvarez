@@ -2,14 +2,20 @@
 import { Class } from './class';
 import { Schedule } from './schedule';
 import { DayHourIndexFinder } from './helpers';
+import { FindClassResult } from './helpers'
+import { Printer } from './printer';
+import { FindClassByDayResult } from './helpers';
+
 
 export class Scheduler {
     private schedule: Schedule;
     private dayHourIndexFinder: DayHourIndexFinder;
+    private printer: Printer;
 
     constructor(schedule: Schedule) {
         this.schedule = schedule;
         this.dayHourIndexFinder = new DayHourIndexFinder(this.schedule.matrix);
+        this.printer = new Printer(this.schedule);
     }
 
     bookClass(name: string, day: string, hour: number): string {
@@ -65,30 +71,36 @@ export class Scheduler {
         }
     }
 
-    findClassByName(name: string): Class[] | null {
+
+    findClassByName(name: string): FindClassResult {
         const upperName = name.toUpperCase();
         const classesFound: Class[] = this.schedule.matrix
             .flatMap(row => row)
             .filter(cls => cls instanceof Class && cls.name === upperName) as Class[];
 
         if (classesFound.length > 0) {
-            return classesFound;
+            return { classes: classesFound };
         } else {
-            return null;
+            return { message: `No classes found under the name: ${upperName}` };
         }
     }
 
-    findClassByDay(day: string, hour: number): string {
+
+    findClassByDay(day: string, hour: number): FindClassByDayResult {
         const { dayIndex, hourIndex } = this.dayHourIndexFinder.getDayAndHourIndices(day, hour);
         if (dayIndex !== -1 && hourIndex !== -1) {
             const scheduledClass = this.schedule.matrix[dayIndex][hourIndex];
             if (scheduledClass instanceof Class) {
-                return `Class found: ${scheduledClass.toString()}`;
+                return scheduledClass as FindClassByDayResult;
             } else {
-                return `No class scheduled on ${day.toUpperCase()} at ${hour}:00.`;
+                return { message: `No class scheduled on ${day.toUpperCase()} at ${hour}:00.` };
             }
         } else {
-            return `Error: Invalid day or hour.`;
+            return { message: `Error: Invalid day or hour.` };
         }
+    }
+
+    public printSchedule(): void {
+        this.printer.printSchedule();
     }
 }

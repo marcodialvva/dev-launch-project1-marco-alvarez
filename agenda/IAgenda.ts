@@ -8,5 +8,5 @@ export interface IAgenda {
     moveClass(dayOrigin: string, hourOrigin: number, dayDestination: string, hourDestination: number): void;
     findClassByName(name: string): (Class[] | null);
     findClassByDay(day: string, hour: number): void;
-    printSchedule(): void;
+
 }

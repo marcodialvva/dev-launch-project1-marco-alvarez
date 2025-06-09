@@ -162,7 +162,7 @@ class Agenda implements IAgenda {
 }
 
 
-const agenda1 = new Agenda(6, 10);
+const agenda1 = new Agenda();
 agenda1.bookClass('Soccer', 'monDay', 16);
 agenda1.bookClass('Code Class', 'monDay', 7);
 agenda1.bookClass('Math', 'tuesday', 7);
@@ -178,3 +178,31 @@ agenda1.findClassByName('Dance');
 agenda1.findClassByDay('tuesday', 7);
 agenda1.findClassByDay('wednesday', 13);
 agenda1.printSchedule();
+
+
+/*
+// Reservar clases
+console.log(scheduler.bookClass("Math", "MONDAY", 9));   // Reserva clase "Math" el lunes a las 6:00
+console.log(scheduler.bookClass("Science", "MONDAY", 7)); // Reserva clase "Science" el lunes a las 7:00
+console.log(scheduler.bookClass("History", "TUESDAY", 8)); // Reserva clase "History" el martes a las 8:00
+
+// Intentar reservar una clase en un horario ya ocupado
+console.log(scheduler.bookClass("Physics", "MONDAY", 13)); // Debería dar error porque ya hay una clase a las 6:00
+
+// Buscar clases por nombre
+console.log(scheduler.findClassByName("Math")); // Debería devolver la clase "Math"
+console.log(scheduler.findClassByName("Biology")); // Debería devolver null porque no hay clase "Biology"
+
+// Buscar clase por día y hora
+console.log(scheduler.findClassByDay("MONDAY", 13)); // Debería devolver la clase "Math"
+console.log(scheduler.findClassByDay("TUESDAY", 9)); // Debería devolver "No class scheduled on TUESDAY at 9:00."
+
+// Eliminar una clase
+console.log(scheduler.deleteClass("MONDAY", 13)); // Debería eliminar la clase "Math"
+console.log(scheduler.deleteClass("MONDAY", 13)); // Debería dar error porque ya no hay clase a las 6:00
+
+// Mover una clase
+console.log(scheduler.moveClass("MONDAY", 7, "TUESDAY", 8)); // Debería mover la clase "Science" a martes a las 8:00
+console.log(scheduler.moveClass("MONDAY", 7, "TUESDAY", 9)); // Debería dar error porque no hay clase a las 7:00 para mover
+
+*/
