@@ -205,4 +205,10 @@ console.log(scheduler.deleteClass("MONDAY", 13)); // Debería dar error porque y
 console.log(scheduler.moveClass("MONDAY", 7, "TUESDAY", 8)); // Debería mover la clase "Science" a martes a las 8:00
 console.log(scheduler.moveClass("MONDAY", 7, "TUESDAY", 9)); // Debería dar error porque no hay clase a las 7:00 para mover
 
+
+
+
+
+
+
 */

@@ -3,7 +3,7 @@ import { Class } from './class';
 import { Schedule } from './schedule';
 import { DayHourIndexFinder } from './helpers';
 import { FindClassResult } from './helpers'
-import { Printer } from './printer';
+import { Printer } from '../pinter/printer';
 import { FindClassByDayResult } from './helpers';
 
 
@@ -101,6 +101,6 @@ export class Scheduler {
     }
 
     public printSchedule(): void {
-        this.printer.printSchedule();
+        this.printer.print();
     }
 }
