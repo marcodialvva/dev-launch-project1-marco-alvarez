@@ -1,11 +1,15 @@
 import { Class } from './class';
 
+
+const NUMBER_OF_DAYS = 6;
+const NUMBER_OF_HOURS = 10;
+
 export class Schedule {
     matrix: (Class | null | string)[][];
     daysOfTheWeek: number;
     hoursOfTheDay: number;
 
-    constructor(days: number = 6, hours: number = 10) {
+    constructor(days: number = NUMBER_OF_DAYS, hours: number = NUMBER_OF_HOURS) {
         this.daysOfTheWeek = days;
         this.hoursOfTheDay = hours;
         this.matrix = Array.from({ length: days + 1 }, () => Array(hours + 1).fill(null));

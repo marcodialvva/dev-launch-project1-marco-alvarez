@@ -3,7 +3,7 @@ import { Class } from './class';
 import { Schedule } from './schedule';
 import { DayHourIndexFinder } from './helpers';
 import { FindClassResult } from './helpers'
-import { Printer } from '../pinter/printer';
+import { Printer } from '../printer/printer';
 import { FindClassByDayResult } from './helpers';
 
 
